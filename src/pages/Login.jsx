@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { useDispatch } from 'react-redux';
-import { loginSuccess, loginFailure } from '../redux/authSlice';
+import { loginSuccess, loginFailed } from '../redux/actions/authActions';
 import '../../css/main.css'; 
 
 function Login() {
@@ -12,10 +12,10 @@ function Login() {
   const navigate = useNavigate(); // Pour rediriger après la connexion
   const dispatch = useDispatch(); // Pour envoyer des actions Redux
 
-  // Gérer le changement dans les champs du formulaire
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
-  const handleRememberChange = (e) => setRememberMe(e.target.checked);
+// Gérer le changement dans les champs du formulaire
+    const handleEmailChange = (e) => setEmail(e.target.value);
+    const handlePasswordChange = (e) => setPassword(e.target.value);
+    const handleRememberChange = (e) => setRememberMe(e.target.checked);
 
   // Gérer la soumission du formulaire
   const handleSubmit = async (e) => {
@@ -33,23 +33,30 @@ function Login() {
     
     if (response.ok) {
         const data = await response.json();
-        console.log('Connexion réussie', data);
+            console.log('Réponse de l\'API:', data);
+        const token = data.body?.token;
+        if (token){
+            localStorage.setItem('authToken', token);
+
         // Dispatch de l'action pour enregistrer l'utilisateur dans Redux
         dispatch(loginSuccess({
-            token: data.token, // La réponse de l'API contient un token
+            token: token, // La réponse de l'API contient un token
             user: data.user, // La réponse de l'API contient les données utilisateur
-        }));
-        localStorage.setItem('authToken', data.token);
+        })); 
+        console.log("Token enregistré", localStorage.getItem('authToken'));
+        console.log("Redirection vers la page '/user' après connexion");
+        console.log(data.user);
         navigate('/user');
+    }
     } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Identifiants incorrects');
-        dispatch(loginFailure(errorData.message || 'Identifiants incorrects'));
+        dispatch(loginFailed(errorData.message || 'Identifiants incorrects'));
     }
 } catch (error) {
     console.error('Erreur lors de la connexion', error);
     setErrorMessage('Erreur de connexion. Veuillez réessayer plus tard.');
-    dispatch(loginFailure('Erreur de connexion. Veuillez réessayer plus tard'));
+    dispatch(loginFailed('Erreur de connexion. Veuillez réessayer plus tard'));
 }
   };
 
@@ -58,6 +65,7 @@ function Login() {
         <section className="sign-in-content">
           <i className="fa fa-user-circle sign-in-icon"></i>
           <h1>Sign In</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
           <form onSubmit={handleSubmit}>
             <div className="input-wrapper">
               <label htmlFor="email">Username</label>

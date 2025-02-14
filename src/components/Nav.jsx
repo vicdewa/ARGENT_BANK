@@ -1,15 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../css/main.css';
 import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../redux/actions/authActions'
 
 const Nav = () => {
 // Récupération de l'état de l'utilisateur connecté depuis Redux
-const { isAuthenticated, user } = useSelector((state) => state.auth);
-// Gestion de la déconnexion
+const { isConnected } = useSelector((state) => state.auth);
+const { userData } = useSelector ((state) => state.user);
 const dispatch = useDispatch();
+const navigate = useNavigate();
+
+// Gestion de la déconnexion
 const handleLogout = () => {
-    dispatch({type: 'LOGOUT'});
+    dispatch(logoutUser()); // Appel de l'action logoutUser 
+    navigate('/'); // Redirection Homepage après logout
 };
     return (
         <nav className="main-nav">
@@ -22,9 +27,11 @@ const handleLogout = () => {
             <h1 className="sr-only">Argent Bank</h1>
         </Link>
         <div>
-            {isAuthenticated? (
+            {isConnected? (
             <div className="user-info">
-                <span className="username">{user?.username}</span>
+                <Link className="username" to="user">
+                    {userData?.firstname}
+                </Link>
                 <i 
                     className="fa-solid fa-right-from-bracket logout-btn"
                     onClick={handleLogout}

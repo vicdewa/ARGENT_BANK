@@ -22,6 +22,7 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   position: relative;
+  padding-bottom: 35px;
 }
 
 .sr-only {
@@ -293,6 +294,8 @@ body {
 .header {
   color: #fff;
   margin-bottom: 2rem;
+  margin-top: 0px;
+  padding-top: 35px;
 }
 
 .transaction-button {
@@ -305,10 +308,6 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
-}
-
-.header{
-  margin-top: 0px;
 }
 
 .edit-form{
