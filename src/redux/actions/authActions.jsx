@@ -29,7 +29,6 @@ export const logoutUser = () => {
             type: LOGOUT,
         });
         // Redirige vers la Homepage
-        const navigate = useNavigate();
         navigate('/');
     };
 }

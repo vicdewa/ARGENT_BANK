@@ -9,6 +9,7 @@ import Homepage from './pages/Homepage'
 import Footer from './components/Footer';
 import Login from './pages/Login'; 
 import UserDashboard from './pages/UserDashboard';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           {/* Route protégée pour le tableau de bord de l'utilisateur */}
           <Route path="/user" element={<UserDashboard />}/>
+          {/* Route pour gérer les erreurs (page 404) */}
+          <Route path="*" element={<ErrorPage />} /> 
         </Routes>
         <Footer />
     </Router>

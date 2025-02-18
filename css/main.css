@@ -89,15 +89,21 @@ body {
 .logout-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: #2c3e50;
   font-size: 1rem;
   cursor: pointer;
 }
 
 .logout-btn i {
   margin-right: 5px;
+  color: #2c3e50;
 }
 
+.sign-out-btn{
+  font-family: "Avenir", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #2c3e50;
+}
 
 .hero {
   background-image: url('../img/bank-tree.jpg');
@@ -315,8 +321,9 @@ body {
 }
 
 .edit-form .input-wrapper {
-  width: 60%;
-  margin: auto;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
   flex-direction: row;
   margin-bottom: 10px;
 }
@@ -329,8 +336,13 @@ body {
   font-size: 30px;
 }
 
+.h1-welcome{
+  font-size: 2rem;
+  font-weight: normal;
+}
+
 .edit-form .input-wrapper input{
-  width: 50%;
+  width: 20%;
 }
 
 .sign-in-content h1{
@@ -342,16 +354,40 @@ body {
   background-color: #00bc77;
   color: white;
   margin-right: 15px;
-  width: 20%;
+  width: 6rem;
 }
 
 .cancel-button{
   margin-top: 25px;
   background-color: #00bc77;
   color: white;
-  width: 20%;
+  width: 6rem;
 }
 
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.error-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.error-page p {
+  font-size: 2 rem;
+  margin-bottom: 2rem;
+}
+
+.error-page a {
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
 
 @media (min-width: 720px) {
   .account {

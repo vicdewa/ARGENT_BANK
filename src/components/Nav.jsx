@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../css/main.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../redux/actions/authActions'
+import '../../css/main.css';
 
 const Nav = () => {
 // Récupération de l'état de l'utilisateur connecté depuis Redux
@@ -13,8 +13,8 @@ const navigate = useNavigate();
 
 // Gestion de la déconnexion
 const handleLogout = () => {
-    dispatch(logoutUser()); // Appel de l'action logoutUser 
-    navigate('/'); // Redirection Homepage après logout
+    dispatch(logoutUser()); // Appel de l'action logoutUser
+    navigate('/'); // Redirection Homepage
 };
     return (
         <nav className="main-nav">
@@ -30,13 +30,10 @@ const handleLogout = () => {
             {isConnected? (
             <div className="user-info">
                 <Link className="username" to="user">
-                    {userData?.firstname}
+                    <i className="fa fa-user-circle"></i> {userData?.firstname}
                 </Link>
-                <i 
-                    className="fa-solid fa-right-from-bracket logout-btn"
-                    onClick={handleLogout}
-                    >
-                        Logout
+                <i className="fa fa-sign-out logout-btn" onClick={handleLogout}>
+                    <span className="sign-out-btn">Sign Out</span>
                 </i>
             </div>
            ) : (

@@ -24,6 +24,7 @@ function UserDashboard() {
                 try {
                     const token = localStorage.getItem('authToken');
                     console.log('Token récupéré :', token);
+                    console.log('User info formulaire', userInfo);
                     const response = await fetch('http://localhost:3001/api/v1/user/profile', {
                         method: 'GET',
                         headers: {
@@ -38,8 +39,13 @@ function UserDashboard() {
                         dispatch({
                             type: GET_USERPROFILE,
                             payload: {
+                                createdAt: data.body.createdAt,
+                                updatedAt: data.body.updatedAt,
                                 id: data.body.id,
-                                email: data.body.email
+                                email: data.body.email,
+                                firstname: data.body.firstName,
+                                lastname: data.body.lastName,
+                                username: data.body.userName
                             }
                         });
                         // Envoie des données utilisateur dans Redux
@@ -68,7 +74,7 @@ function UserDashboard() {
             setUserInfo({
                 username: userData.username || '',
                 firstName: userData.firstname || '',
-                lastName: userData.lastName || '',
+                lastName: userData.lastname || '',
             });
         }
     }, [userData]);
@@ -95,13 +101,14 @@ function UserDashboard() {
     const handleSave = async () => {
         try {
             const authToken = localStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
+            console.log('Enregistrement', authToken);
             const response = await fetch('http://localhost:3001/api/v1/user/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`,
                 },
-                body: JSON.stringify(userInfo),
+                body: JSON.stringify(userInfo.username),
             });
             if (response.ok) {
                 const data = await response.json();
@@ -111,8 +118,8 @@ function UserDashboard() {
                 // Réinitialisation des champs
                 setUserInfo({
                     username: data.user.username || '',
-                    firstName: data.user.firstName || '',
-                    lastName: data.user.lastName || ''
+                    firstname: data.user.firstName || '',
+                    lastname: data.user.lastname || ''
                 });
                 // Le formulaire se masque après la MAJ
                 setIsEditing(false); 
@@ -140,7 +147,7 @@ function UserDashboard() {
                 <div className="header">
                     {!isEditing ? (
                         <>
-                            <h1>Welcome back<br />{userData?.username}!</h1>
+                            <h1 className="h1-welcome">Welcome back<br />{userData.firstname} {userData.lastname}!</h1>
                             <button 
                                 className="edit-button" 
                                 onClick={handleEditClick}>Edit Name
@@ -156,7 +163,7 @@ function UserDashboard() {
                                         type="text"
                                         id="username"
                                         name="username"
-                                        value={userInfo.username}
+                                        value={userData.username}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -167,9 +174,9 @@ function UserDashboard() {
                                         type="text"
                                         id="firstName"
                                         name="firstName"
-                                        value={userInfo.firstName}
-                                        onChange={handleInputChange}
-                                        required
+                                        value={userData.firstname}
+                                        disabled // Lecture seule 
+                                        readOnly
                                     />
                                 </div>
                                 <div className="input-wrapper">
@@ -178,9 +185,9 @@ function UserDashboard() {
                                         type="text"
                                         id="lastName"
                                         name="lastName"
-                                        value={userInfo.lastName}
-                                        onChange={handleInputChange}
-                                        required
+                                        value={userData.lastname}
+                                        disabled // Lecture seule
+                                        readOnly
                                     />
                                 </div>
                                 <button type="button" className="save-button" onClick={handleSave}>Save</button>
