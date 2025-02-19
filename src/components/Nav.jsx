@@ -30,7 +30,7 @@ const handleLogout = () => {
             {isConnected? (
             <div className="user-info">
                 <Link className="username" to="user">
-                    <i className="fa fa-user-circle"></i> {userData?.firstname}
+                    <i className="fa fa-user-circle"></i> {userData?.username}
                 </Link>
                 <i className="fa fa-sign-out logout-btn" onClick={handleLogout}>
                     <span className="sign-out-btn">Sign Out</span>

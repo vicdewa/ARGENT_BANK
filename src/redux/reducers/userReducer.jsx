@@ -15,6 +15,7 @@ export const userReducer = (state = initialState, action ) => {
                 userData: action.payload
             }
         case EDIT_USERNAME: 
+        console.log("Réduction - Mise à jour de l'username", action.payload); 
             return {
                 ...state,
                 status: "MODIFIED",

@@ -5,6 +5,7 @@ import '../../css/main.css';
 import Account from '../components/Account'; 
 import { Navigate } from 'react-router-dom';
 import { GET_USERPROFILE } from '../redux/actions/typeActions';
+import { updateUsername } from "../redux/actions/userActions";
 
 function UserDashboard() {
     const dispatch = useDispatch();
@@ -113,8 +114,14 @@ function UserDashboard() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Infos mises à jour', data);
-                // MAJ du store avec une action Redux
-                dispatch(userProfile(data.user)); // Mettre à jour l'utilisateur dans Redux
+                
+             // Vérification de la donnée récupérée
+             console.log("UserName récupéré:", data.body.userName);
+
+//MAJ du store avec une action Redux
+dispatch(updateUsername(data.body.userName)); // Mettre à jour l'utilisateur dans Redux
+
+
                 // Réinitialisation des champs
                 setUserInfo({
                     username: '',
