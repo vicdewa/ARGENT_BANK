@@ -1,5 +1,4 @@
 import { LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from "./typeActions";
-import { useNavigate } from 'react-router-dom';
 
 /* Actions d'authentification */
 
@@ -28,7 +27,5 @@ export const logoutUser = () => {
         dispatch({
             type: LOGOUT,
         });
-        // Redirige vers la Homepage
-        navigate('/');
     };
 }

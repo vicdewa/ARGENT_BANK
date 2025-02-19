@@ -22,7 +22,7 @@ function UserDashboard() {
         if (isConnected) {
             const fetchUserProfile = async () => {
                 try {
-                    const token = localStorage.getItem('authToken');
+                    const token = sessionStorage.getItem('authToken');
                     console.log('Token récupéré :', token);
                     console.log('User info formulaire', userInfo);
                     const response = await fetch('http://localhost:3001/api/v1/user/profile', {
@@ -64,15 +64,15 @@ function UserDashboard() {
     // Initialiser `userInfo` avec `userData` une fois que les données sont disponibles
     const [userInfo, setUserInfo] = useState({
         username: userData?.username || '',
-        firstName: userData?.firstName || '',
-        lastName: userData?.lastName || '',
+        firstName: userData?.firstname || '', 
+        lastName: userData?.lastname || '',
     });
 
-    // Mettre à jour les informations utilisateur dans `userInfo` si `userData` change
+    // Mettre à jour les informations utilisateur dans `userInfo` si `userData` change.Exécuté après que userData ait été récupéré et mis à jour dans le store Redux.
     useEffect(() => {
         if (userData) {
             setUserInfo({
-                username: userData.username || '',
+                username: '',
                 firstName: userData.firstname || '',
                 lastName: userData.lastname || '',
             });
@@ -100,15 +100,15 @@ function UserDashboard() {
     // Gestion de la sauvegarde des modifications du profil utilisateur
     const handleSave = async () => {
         try {
-            const authToken = localStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
-            console.log('Enregistrement', authToken);
+            const authToken = sessionStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
+            console.log('Token récupéré', authToken);
             const response = await fetch('http://localhost:3001/api/v1/user/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`,
                 },
-                body: JSON.stringify(userInfo.username),
+                body: JSON.stringify({userName:userInfo.username || ''}),
             });
             if (response.ok) {
                 const data = await response.json();
@@ -117,14 +117,13 @@ function UserDashboard() {
                 dispatch(userProfile(data.user)); // Mettre à jour l'utilisateur dans Redux
                 // Réinitialisation des champs
                 setUserInfo({
-                    username: data.user.username || '',
-                    firstname: data.user.firstName || '',
-                    lastname: data.user.lastname || ''
+                    username: '',
                 });
                 // Le formulaire se masque après la MAJ
                 setIsEditing(false); 
             } else {
-                console.error('Erreur lors de la sauvegarde');
+                const errorData = await response.json();
+                console.error('Erreur lors de la sauvegarde', errorData);
             }
         } catch (error) {
             console.error('Erreur de connexion', error);
@@ -134,7 +133,7 @@ function UserDashboard() {
     // Gestion de l'annulation de modification
     const handleCancel = () => {
         setUserInfo({
-            username: userData?.username || '',
+            username: '',
             firstName: userData?.firstName || '',
             lastName: userData?.lastName || '',
         });
@@ -163,7 +162,7 @@ function UserDashboard() {
                                         type="text"
                                         id="username"
                                         name="username"
-                                        value={userData.username}
+                                        value={userInfo.username}
                                         onChange={handleInputChange}
                                         required
                                     />

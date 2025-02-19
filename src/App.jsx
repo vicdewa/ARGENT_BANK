@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from './redux/actions/authActions';
 import '../css/main.css';
 import 'font-awesome/css/font-awesome.min.css';
 
