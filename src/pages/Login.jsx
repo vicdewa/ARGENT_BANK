@@ -15,7 +15,7 @@ function Login() {
 // Gérer le changement dans les champs du formulaire
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
-    const handleRememberChange = (e) => setRememberMe(e.target.checked);
+    //const handleRememberChange = (e) => setRememberMe(e.target.checked);
 
   // Gérer la soumission du formulaire
   const handleSubmit = async (e) => {
@@ -36,29 +36,35 @@ function Login() {
             console.log('Réponse de l\'API:', data);
         const token = data.body?.token;
         if (token){
-            if (rememberMe) {
-                // Enregistrer le token et les données utilisateur dans localStorage si "Remember me" est coché
                 localStorage.setItem('authToken', token);
                 localStorage.setItem('user', JSON.stringify(data.user));  // Enregistrer les données utilisateur
-              } else {
-                // Sinon, utiliser sessionStorage
-                sessionStorage.setItem('authToken', token);
-                sessionStorage.setItem('user', JSON.stringify(data.user));  // Enregistrer les données utilisateur
-              }
         // Dispatch de l'action pour enregistrer l'utilisateur dans Redux
         dispatch(loginSuccess({
             token: token, // La réponse de l'API contient un token
             user: data.user, // La réponse de l'API contient les données utilisateur
         })); 
-        console.log("Token enregistré", sessionStorage.getItem('authToken'));
+        console.log("Token enregistré", localStorage.getItem('authToken'));
         console.log("Redirection vers la page '/user' après connexion");
         console.log(data.user);
         navigate('/user');
     }
     } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message || 'Identifiants incorrects');
-        dispatch(loginFailed(errorData.message || 'Identifiants incorrects'));
+
+        //setErrorMessage(errorData.message || 'Identifiants incorrects');
+        //dispatch(loginFailed(errorData.message || 'Identifiants incorrects'));
+        let errorMsg='';
+        if(response.status === 400){
+            errorMsg='Identifiants incorrects.'
+        } else if (response.status === 500){
+            errorMsg='Erreur du serveur. Veuillez réessayer plus tard'
+        } else if (errorData.message === 'User not found'){
+            errorMsg= 'Aucun utilisateur trouvé avec cet email'
+        } else {
+            errorMsg= errorData.message || 'Erreur inconnue. Veuillez réessayer'
+        }
+        setErrorMessage(errorMsg);
+        dispatch(loginFailed(errorMsg));
     }
 } catch (error) {
     console.error('Erreur lors de la connexion', error);
@@ -81,7 +87,6 @@ function Login() {
                 id="email"
                 value={email}
                 onChange={handleEmailChange}
-                required
               />
             </div>
             <div className="input-wrapper">
@@ -91,7 +96,6 @@ function Login() {
                 id="password"
                 value={password}
                 onChange={handlePasswordChange}
-                required
               />
             </div>
             <div className="input-remember">
@@ -99,7 +103,7 @@ function Login() {
                 type="checkbox"
                 id="remember-me"
                 checked={rememberMe}
-                onChange={handleRememberChange}
+                //onChange={handleRememberChange}
               />
               <label htmlFor="remember-me">Remember me</label>
             </div>

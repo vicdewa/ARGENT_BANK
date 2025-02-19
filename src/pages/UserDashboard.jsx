@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { userProfile } from "../redux/actions/userActions"; // Action redux pour MAJ infos utilisateur
 import '../../css/main.css';
 import Account from '../components/Account'; 
 import { Navigate } from 'react-router-dom';
@@ -23,7 +22,7 @@ function UserDashboard() {
         if (isConnected) {
             const fetchUserProfile = async () => {
                 try {
-                    const token = sessionStorage.getItem('authToken');
+                    const token = localStorage.getItem('authToken');
                     console.log('Token récupéré :', token);
                     console.log('User info formulaire', userInfo);
                     const response = await fetch('http://localhost:3001/api/v1/user/profile', {
@@ -101,7 +100,7 @@ function UserDashboard() {
     // Gestion de la sauvegarde des modifications du profil utilisateur
     const handleSave = async () => {
         try {
-            const authToken = sessionStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
+            const authToken = localStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
             console.log('Token récupéré', authToken);
             const response = await fetch('http://localhost:3001/api/v1/user/profile', {
                 method: 'PUT',
@@ -114,14 +113,10 @@ function UserDashboard() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Infos mises à jour', data);
-                
-             // Vérification de la donnée récupérée
+            // Vérification de la donnée récupérée
              console.log("UserName récupéré:", data.body.userName);
-
-//MAJ du store avec une action Redux
-dispatch(updateUsername(data.body.userName)); // Mettre à jour l'utilisateur dans Redux
-
-
+            //MAJ de l'utilisateur dans Redux avec une action
+            dispatch(updateUsername(data.body.userName)); 
                 // Réinitialisation des champs
                 setUserInfo({
                     username: '',
