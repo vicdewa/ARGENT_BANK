@@ -6,18 +6,18 @@ import { Navigate } from 'react-router-dom';
 import { GET_USERPROFILE } from '../redux/actions/typeActions';
 import { updateUsername } from "../redux/actions/userActions";
 
-function UserDashboard() {
+function Profile() {
     const dispatch = useDispatch();
     const { userData } = useSelector((state) => state.user); // userData provient de Redux
     const isConnected = useSelector((state) => state.auth.isConnected);
     console.log('userData dans userDashboard', userData);
 
-    // Si pas authentifié, redirection vers la page de connexion
+// Si l'utilisateur n'est pas authentifié, on le redirige vers la page de connexion
     if (!isConnected) {
         return <Navigate to="/login" />;
     }
 
-    // Effet pour récupérer les données utilisateur depuis l'API dès que le composant se charge
+// Ajout d'un effet pour récupérer les données utilisateur depuis l'API dès que le composant se charge
     useEffect(() => {
         if (isConnected) {
             const fetchUserProfile = async () => {
@@ -31,44 +31,43 @@ function UserDashboard() {
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Profil utilisateur récupéré', data);
-                        // Dispatcher l'action avec les données récupérées
-                        dispatch({
-                            type: GET_USERPROFILE,
-                            payload: {
-                                createdAt: data.body.createdAt,
-                                updatedAt: data.body.updatedAt,
-                                id: data.body.id,
-                                email: data.body.email,
-                                firstname: data.body.firstName,
-                                lastname: data.body.lastName,
-                                username: data.body.userName
-                            }
-                        });
-                        // Envoie des données utilisateur dans Redux
-                    } else {
-                        console.error('Erreur lors de la récupération des informations utilisateur');
-                    }
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Profil utilisateur récupéré', data);
+                // On dispatch l'action avec les données récupérées
+                    dispatch({
+                        type: GET_USERPROFILE,
+                        payload: {
+                            createdAt: data.body.createdAt,
+                            updatedAt: data.body.updatedAt,
+                            id: data.body.id,
+                            email: data.body.email,
+                            firstname: data.body.firstName,
+                            lastname: data.body.lastName,
+                            username: data.body.userName
+                        }
+                    });
+                // Envoi des données utilisateur dans Redux
+                } else {
+                    console.error('Erreur lors de la récupération des informations utilisateur');
+                }
                 } catch (error) {
                     console.error('Erreur de récupération du profil utilisateur', error);
                 }
             };
-
-            fetchUserProfile(); // Appel de la fonction pour récupérer le profil utilisateur
+        // Appel de la fonction pour récupérer le profil utilisateur
+            fetchUserProfile(); 
         }
     }, [isConnected, dispatch]);
 
-    // Initialiser `userInfo` avec `userData` une fois que les données sont disponibles
+// Initialisation de `userInfo` avec `userData` une fois que les données sont disponibles
     const [userInfo, setUserInfo] = useState({
         username: userData?.username || '',
         firstName: userData?.firstname || '', 
         lastName: userData?.lastname || '',
     });
 
-    // Mettre à jour les informations utilisateur dans `userInfo` si `userData` change.Exécuté après que userData ait été récupéré et mis à jour dans le store Redux.
+// Mise à jour des informations utilisateur dans `userInfo` si `userData` change. Exécutée après que userData ait été récupéré et mis à jour dans le store Redux.
     useEffect(() => {
         if (userData) {
             setUserInfo({
@@ -79,28 +78,29 @@ function UserDashboard() {
         }
     }, [userData]);
 
-    // Gestion de l'état d'édition (quand l'utilisateur modifie ses infos)
+// Gestion de l'état d'édition (quand l'utilisateur modifie ses infos)
     const [isEditing, setIsEditing] = useState(false);
-
-    // Gestion du clic sur "Edit"
+// Gestion du clic sur "Edit"
     const handleEditClick = () => {
         console.log('Clic sur Edit');
-        setIsEditing(true); // Le formulaire s'affiche
+        // Le formulaire s'affiche
+        setIsEditing(true); 
     };
-
-    // Gestion du changement de valeur dans les champs du formulaire
+// Gestion du changement de valeur dans les champs du formulaire
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevState) => ({
             ...prevState,
-            [name]: value, // MAJ de l'info correspondante dans le state
+            // MAJ de l'info correspondante dans le state
+            [name]: value, 
         }));
     };
 
-    // Gestion de la sauvegarde des modifications du profil utilisateur
+// Gestion de la sauvegarde des modifications du profil utilisateur
     const handleSave = async () => {
         try {
-            const authToken = localStorage.getItem('authToken'); // Récupérer le token pour "autoriser" l'action de modification
+            // Récupération du token pour "autoriser" l'action de modification
+            const authToken = localStorage.getItem('authToken'); 
             console.log('Token récupéré', authToken);
             const response = await fetch('http://localhost:3001/api/v1/user/profile', {
                 method: 'PUT',
@@ -113,10 +113,10 @@ function UserDashboard() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Infos mises à jour', data);
-            // Vérification de la donnée récupérée
-             console.log("UserName récupéré:", data.body.userName);
-            //MAJ de l'utilisateur dans Redux avec une action
-            dispatch(updateUsername(data.body.userName)); 
+                // Vérification de la donnée récupérée
+                console.log("UserName récupéré:", data.body.userName); 
+                //MAJ de l'utilisateur dans Redux avec une action
+                dispatch(updateUsername(data.body.userName)); 
                 // Réinitialisation des champs
                 setUserInfo({
                     username: '',
@@ -127,19 +127,20 @@ function UserDashboard() {
                 const errorData = await response.json();
                 console.error('Erreur lors de la sauvegarde', errorData);
             }
-        } catch (error) {
-            console.error('Erreur de connexion', error);
+            } catch (error) {
+                console.error('Erreur de connexion', error);
         }
     };
 
-    // Gestion de l'annulation de modification
+// Gestion de l'annulation de la modification
     const handleCancel = () => {
         setUserInfo({
             username: '',
             firstName: userData?.firstName || '',
             lastName: userData?.lastName || '',
         });
-        setIsEditing(false); // Formulaire masqué
+        // Le formulaire se masque
+        setIsEditing(false); 
     };
 
     return (
@@ -199,8 +200,7 @@ function UserDashboard() {
                 </div>
 
                 <h2 className="sr-only">Accounts</h2>
-
-                {/* Utilisation du composant Account pour chaque compte */}
+{/* Utilisation du composant Account pour chacun des comptes */}
                 <Account 
                     title="Argent Bank Checking (x8349)" 
                     balance="$2,082.79" 
@@ -221,4 +221,4 @@ function UserDashboard() {
     );
 }
 
-export default UserDashboard;
+export default Profile;

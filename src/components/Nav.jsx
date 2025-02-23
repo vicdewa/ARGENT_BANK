@@ -13,8 +13,10 @@ const navigate = useNavigate();
 
 // Gestion de la déconnexion
 const handleLogout = () => {
-    dispatch(logoutUser()); // Appel de l'action logoutUser
-    navigate('/'); // Redirection Homepage
+    // Appel de l'action logoutUser
+    dispatch(logoutUser()); 
+    // Redirection vers la Homepage
+    navigate('/'); 
 };
     return (
         <nav className="main-nav">
