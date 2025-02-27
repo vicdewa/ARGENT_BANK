@@ -155,17 +155,26 @@ body {
   .hero-content .text {
     font-size: 1.2rem;
   }
+  .feature-item{
+    width: 30%;
+  }
+  .feature-container{
+    flex-direction: row !important;
+  }
 }
 
-.features {
+.feature-container{
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
 }
 
-@media (min-width: 920px) {
-  .features {
-    flex-direction: row;
-  }
+.feature-item {
+  padding: 2.5rem;
+  text-align: center;
+  width: 60%;
+  align-content: center;
+  margin: auto;
 }
 
 .feature-icon {
@@ -173,11 +182,6 @@ body {
   border: 10px solid #00bc77;
   border-radius: 50%;
   padding: 1rem;
-}
-
-.feature-item {
-  flex: 1;
-  padding: 2.5rem;
 }
 
 .feature-item-title {

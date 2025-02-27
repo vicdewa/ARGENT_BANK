@@ -44,9 +44,9 @@ function Login() {
             user: data.user, // La réponse de l'API contient les données utilisateur
         })); 
             console.log("Token enregistré", localStorage.getItem('authToken'));
-            console.log("Redirection vers la page '/user' après connexion");
+            console.log("Redirection vers la page '/profile' après connexion");
             console.log(data.user);
-        navigate('/user');
+        navigate('/profile');
         }
         } else {
             const errorData = await response.json();

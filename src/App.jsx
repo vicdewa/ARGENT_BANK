@@ -21,7 +21,7 @@ function App() {
           {/* Route pour la page de connexion */}
           <Route path="/login" element={<Login />} />
           {/* Route protégée pour le tableau de bord de l'utilisateur */}
-          <Route path="/user" element={<Profile />}/>
+          <Route path="/profile" element={<Profile />}/>
           {/* Route pour gérer les erreurs (page 404) */}
           <Route path="*" element={<ErrorPage />} /> 
         </Routes>
